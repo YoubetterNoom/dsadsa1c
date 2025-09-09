@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autistic intelligence</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <link rel="icon" href="logo.png" type="image/png">
+</head>
+<body>
+    <!-- Windows 95 加载页面 -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-window">
+            <div class="loading-title-bar">
+                <div class="loading-title-bar-text">
+                    <div class="loading-title-bar-icon">
+                        <img src="logo.png" alt="AI Logo" width="16" height="16">
+                    </div>
+                    <span>Starting Autistic 95...</span>
+                </div>
+                <div class="loading-window-controls">
+                    <div class="loading-window-button minimize">_</div>
+                    <div class="loading-window-button maximize">□</div>
+                    <div class="loading-window-button close">×</div>
+                </div>
+            </div>
+            <div class="loading-content">
+                <div class="loading-message">
+                    <p>Please wait while $AI is loading...</p>
+                </div>
+                <div class="loading-progress-container">
+                    <div id="loading-progress-bar" class="loading-progress-bar"></div>
+                </div>
+                <div class="loading-status" id="loading-status">
+                    Initializing system components...
+                </div>
+                <div class="loading-footer">
+                    <button id="loading-cancel" class="loading-button">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1 class="rainbow-text">Autistic intelligence - $AI</h1>
+            <button id="help-btn" class="help-button">Help</button>
+        </header>
+        
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="title-bar">
+                    <span>Categories</span>
+                    <div class="window-controls">
+                        <div class="window-button minimize">_</div>
+                        <div class="window-button maximize">□</div>
+                        <div class="window-button close">×</div>
+                    </div>
+                </div>
+                <div class="categories">
+                    <div class="category active" data-category="people">
+                        <span>People</span>
+                    </div>
+                    <div class="category" data-category="face">
+                        <span>Face</span>
+                    </div>
+                    <div class="category" data-category="body_parts">
+                        <span>Body Parts</span>
+                    </div>
+                    <div class="category" data-category="cloth">
+                        <span>Clothing</span>
+                    </div>
+                    <div class="category" data-category="accessories">
+                        <span>Accessories</span>
+                    </div>
+                    <div class="category" data-category="glass">
+                        <span>Glass</span>
+                    </div>
+                    <div class="category" data-category="hats">
+                        <span>Hats</span>
+                    </div>
+                </div>
+                
+                <div class="images-container win95-scrollbar" id="images-container">
+                    <!-- Images will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <div class="title-bar">
+                    <span>Canvas Editor</span>
+                    <div class="window-controls">
+                        <div class="window-button minimize">_</div>
+                        <div class="window-button maximize">□</div>
+                        <div class="window-button close">×</div>
+                    </div>
+                </div>
+                <div class="canvas-controls">
+                    <button id="clear-canvas">Clear Canvas</button>
+                    <button id="save-canvas">Save Canvas</button>
+                    <button id="add-text">Add Text</button>
+                    <div class="right-buttons">
+                        <button id="community-btn">Community</button>
+                        <button id="chart-btn">Chart</button>
+                    </div>
+                </div>
+                <div id="canvas" class="canvas"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 图层控制菜单 - 固定在画布左上角 -->
+    <div id="layer-controls-menu" class="layer-controls-menu">
+        <div class="layer-control-button" id="bring-to-front">↑↑</div>
+        <div class="layer-control-button" id="bring-forward">↑</div>
+        <div class="layer-control-button" id="send-backward">↓</div>
+        <div class="layer-control-button" id="send-to-back">↓↓</div>
+        <div class="layer-control-button" id="preview-canvas"><i class="icon-eye">👁️</i></div>
+        <div class="layer-control-button" id="download-canvas"><i class="icon-download">⬇️</i></div>
+    </div>
+    
+    <!-- Help Dialog -->
+    <div id="help-dialog" class="help-dialog">
+        <div class="help-content">
+            <div class="title-bar">
+                <span>User Guide</span>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div class="help-text win95-scrollbar">
+                <h3>Basic Operations</h3>
+                <ul>
+                    <li><strong>Select Image:</strong> Click on any image from the sidebar to add it to the canvas.</li>
+                    <li><strong>Move Image:</strong> Click and drag an image to move it around the canvas.</li>
+                    <li><strong>Deselect:</strong> Click on empty space on the canvas to deselect any selected image.</li>
+                </ul>
+                
+                <h3>Image Manipulation</h3>
+                <ul>
+                    <li><strong>Resize:</strong> Drag the corner handles to resize the selected image.</li>
+                    <li><strong>Rotate:</strong> Drag the rotate handle (circle above the image) to rotate.</li>
+                </ul>
+                
+                <h3>Layer Controls</h3>
+                <ul>
+                    <li><strong>Bring Forward:</strong> Move the selected image one layer up.</li>
+                    <li><strong>Send Backward:</strong> Move the selected image one layer down.</li>
+                    <li><strong>Bring to Front:</strong> Move the selected image to the top layer.</li>
+                    <li><strong>Send to Back:</strong> Move the selected image to the bottom layer.</li>
+                </ul>
+                
+                <h3>Text Functions</h3>
+                <ul>
+                    <li><strong>Add Text:</strong> Click the "Add Text" button to add text to the canvas.</li>
+                    <li><strong>Edit Text:</strong> Double-click on any text element to edit its content.</li>
+                    <li><strong>Format Text:</strong> Use the text controls that appear when text is selected.</li>
+                </ul>
+                
+                <h3>Other Functions</h3>
+                <ul>
+                    <li><strong>Delete Image:</strong> Select an image and press the Delete key to remove it from the canvas.</li>
+                    <li><strong>Clear Canvas:</strong> Remove all images from the canvas.</li>
+                    <li><strong>Save Canvas:</strong> Save your current canvas layout (placeholder functionality).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html> 

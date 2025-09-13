@@ -13,10 +13,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingMessages = [
         "Initializing system components...",
         "Loading user interface...",
-        "Preparing canvas elements...",
-        "Loading image assets...",
-        "Configuring Autistic 95 environment...",
-        "Starting $AI Setup...",
+        "Preparing Canvas elements...",
+        "Loading assets...",
+        "Configuring Canvas environment...",
+        "Starting $JC Setup...",
         "Almost there..."
     ];
     
@@ -86,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const sendBackwardBtn = document.getElementById('send-backward');
     const bringToFrontBtn = document.getElementById('bring-to-front');
     const sendToBackBtn = document.getElementById('send-to-back');
+    const flipHorizontalBtn = document.getElementById('flip-horizontal');
+    const flipVerticalBtn = document.getElementById('flip-vertical');
     
     // State variables
     let activeCategory = 'people'; // 默认激活people类别
@@ -103,6 +105,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize
     loadImages(activeCategory);
+    
+    // 添加水印到画布
+    addWatermark();
     
     // Set the first category as active
     categories.forEach(category => {
@@ -188,11 +193,41 @@ document.addEventListener('DOMContentLoaded', function() {
         canvas.innerHTML = '';
         currentZIndex = 1;
         highestZIndex = 0;
+        // 重新添加水印
+        addWatermark();
     });
     
-    // Save Canvas Button (placeholder functionality)
+    // Save Canvas Button - 使用真正的保存功能
     saveCanvasBtn.addEventListener('click', function() {
-        alert('Canvas saved! (This is a placeholder functionality)');
+        // 临时隐藏所有控制元素
+        const allControls = canvas.querySelectorAll('.transform-controls');
+        allControls.forEach(control => {
+            control.style.visibility = 'hidden';
+        });
+        
+        // 临时隐藏图层控制菜单
+        const layerControlsMenu = document.getElementById('layer-controls-menu');
+        const originalDisplayStyle = layerControlsMenu.style.display;
+        layerControlsMenu.style.display = 'none';
+        
+        // 使用html2canvas库将画布转换为图像
+        html2canvasPromise(canvas).then(function(canvasElement) {
+            // 创建下载链接
+            const link = document.createElement('a');
+            link.download = 'jakcanvas-' + new Date().toISOString().slice(0, 10) + '.png';
+            link.href = canvasElement.toDataURL('image/png');
+            link.click();
+            
+            // 恢复控制元素
+            allControls.forEach(control => {
+                if (control.parentElement.classList.contains('selected')) {
+                    control.style.visibility = 'visible';
+                }
+            });
+            
+            // 恢复图层控制菜单
+            layerControlsMenu.style.display = originalDisplayStyle;
+        });
     });
     
     // Layer Control Buttons
@@ -232,11 +267,76 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Delete selected image when Delete key is pressed
+    // Flip Horizontal Button
+    flipHorizontalBtn.addEventListener('click', function() {
+        if (selectedImage) {
+            const currentTransform = selectedImage.style.transform || '';
+            let scaleX = 1;
+            let scaleY = 1;
+            let rotation = 0;
+            
+            // Parse existing transform values
+            const scaleXMatch = currentTransform.match(/scaleX\(([-\d.]+)\)/);
+            const scaleYMatch = currentTransform.match(/scaleY\(([-\d.]+)\)/);
+            const rotateMatch = currentTransform.match(/rotate\(([-\d.]+)deg\)/);
+            
+            if (scaleXMatch) scaleX = parseFloat(scaleXMatch[1]);
+            if (scaleYMatch) scaleY = parseFloat(scaleYMatch[1]);
+            if (rotateMatch) rotation = parseFloat(rotateMatch[1]);
+            
+            // Flip horizontal by inverting scaleX
+            scaleX = -scaleX;
+            
+            // Apply the new transform
+            selectedImage.style.transform = `scaleX(${scaleX}) scaleY(${scaleY}) rotate(${rotation}deg)`;
+            
+            // Store the flip state for future reference
+            selectedImage.dataset.flippedX = scaleX < 0 ? 'true' : 'false';
+        }
+    });
+    
+    // Flip Vertical Button
+    flipVerticalBtn.addEventListener('click', function() {
+        if (selectedImage) {
+            const currentTransform = selectedImage.style.transform || '';
+            let scaleX = 1;
+            let scaleY = 1;
+            let rotation = 0;
+            
+            // Parse existing transform values
+            const scaleXMatch = currentTransform.match(/scaleX\(([-\d.]+)\)/);
+            const scaleYMatch = currentTransform.match(/scaleY\(([-\d.]+)\)/);
+            const rotateMatch = currentTransform.match(/rotate\(([-\d.]+)deg\)/);
+            
+            if (scaleXMatch) scaleX = parseFloat(scaleXMatch[1]);
+            if (scaleYMatch) scaleY = parseFloat(scaleYMatch[1]);
+            if (rotateMatch) rotation = parseFloat(rotateMatch[1]);
+            
+            // Flip vertical by inverting scaleY
+            scaleY = -scaleY;
+            
+            // Apply the new transform
+            selectedImage.style.transform = `scaleX(${scaleX}) scaleY(${scaleY}) rotate(${rotation}deg)`;
+            
+            // Store the flip state for future reference
+            selectedImage.dataset.flippedY = scaleY < 0 ? 'true' : 'false';
+        }
+    });
+    
+    // Keyboard shortcuts
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Delete' && selectedImage) {
             selectedImage.remove();
             selectedImage = null;
+        }
+        
+        // Flip shortcuts - H for horizontal, V for vertical
+        if (e.key.toLowerCase() === 'h' && selectedImage && !e.ctrlKey && !e.altKey) {
+            flipHorizontalBtn.click();
+        }
+        
+        if (e.key.toLowerCase() === 'v' && selectedImage && !e.ctrlKey && !e.altKey) {
+            flipVerticalBtn.click();
         }
     });
     
@@ -353,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'accessories':
                 // 添加accessories文件夹中的图片
-                for (let i = 1; i <= 34; i++) {
+                for (let i = 1; i <= 49; i++) {
                     images.push({
                         src: `images/accessories/${i}.png`,
                         alt: `Accessory ${i}`
@@ -475,6 +575,7 @@ document.addEventListener('DOMContentLoaded', function() {
         imgElement.style.left = (clientX - canvasRect.left) + 'px';
         imgElement.style.top = (clientY - canvasRect.top) + 'px';
         imgElement.style.zIndex = currentZIndex++;
+        imgElement.style.transform = 'scaleX(1) scaleY(1) rotate(0deg)'; // Initialize transform for flip compatibility
         highestZIndex = Math.max(highestZIndex, currentZIndex - 1);
         
         // Create the actual image
@@ -780,8 +881,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const originalAngle = parseFloat(imgElement.dataset.originalAngle);
         const rotation = originalAngle + (currentAngle - initialAngle);
         
-        // Apply rotation
-        imgElement.style.transform = `rotate(${rotation}deg)`;
+        // Get current scale values for flip compatibility
+        const currentTransform = imgElement.style.transform || '';
+        let scaleX = 1;
+        let scaleY = 1;
+        
+        const scaleXMatch = currentTransform.match(/scaleX\(([-\d.]+)\)/);
+        const scaleYMatch = currentTransform.match(/scaleY\(([-\d.]+)\)/);
+        
+        if (scaleXMatch) scaleX = parseFloat(scaleXMatch[1]);
+        if (scaleYMatch) scaleY = parseFloat(scaleYMatch[1]);
+        
+        // Apply rotation with existing scale values
+        imgElement.style.transform = `scaleX(${scaleX}) scaleY(${scaleY}) rotate(${rotation}deg)`;
         
         // Update transform controls
         updateTransformControlsPosition(imgElement);
@@ -1281,14 +1393,40 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Community button functionality
     communityBtn.addEventListener('click', function() {
-        window.open('https://x.com/autisticintelx', '_blank');
+        window.open('https://x.com/i/communities/1966804177226764639', '_blank');
     });
 
     // Chart button functionality
     chartBtn.addEventListener('click', function() {
-        window.open('https://x.com/autisticintelx', '_blank');
+        window.open('https://pump.fun/coin/Bvtzt8iJfxeqimGrU4YYcciQaNgVNtr4fsiDTMs9pump', '_blank');
     });
     
     // 初始化时显示图层控制菜单
     updateLayerControlsPosition();
+    
+    // 水印功能
+    function addWatermark() {
+        // 创建水印元素
+        const watermark = document.createElement('div');
+        watermark.className = 'canvas-watermark';
+        watermark.textContent = 'JAKCANVAS -- $JK';
+        watermark.style.cssText = `
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'MS Sans Serif', sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+            user-select: none;
+            z-index: 999;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+            transform: rotate(-15deg);
+        `;
+        
+        // 将水印添加到画布
+        canvas.appendChild(watermark);
+    }
 }); 

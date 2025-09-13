@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autistic intelligence</title>
+    <title>Jak Canvas</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/loading.css">
     <link rel="icon" href="logo.png" type="image/png">
@@ -17,7 +17,7 @@
                     <div class="loading-title-bar-icon">
                         <img src="logo.png" alt="AI Logo" width="16" height="16">
                     </div>
-                    <span>Starting Autistic 95...</span>
+                    <span>Starting Jak Canvas...</span>
                 </div>
                 <div class="loading-window-controls">
                     <div class="loading-window-button minimize">_</div>
@@ -27,7 +27,7 @@
             </div>
             <div class="loading-content">
                 <div class="loading-message">
-                    <p>Please wait while $AI is loading...</p>
+                    <p>Please wait while Canvas is loading...</p>
                 </div>
                 <div class="loading-progress-container">
                     <div id="loading-progress-bar" class="loading-progress-bar"></div>
@@ -44,7 +44,7 @@
 
     <div class="container">
         <header>
-            <h1 class="rainbow-text">Autistic intelligence - $AI</h1>
+            <h1 class="rainbow-text">Jak Canvas - $JC Version 1.2</h1>
             <button id="help-btn" class="help-button">Help</button>
         </header>
         
@@ -116,6 +116,8 @@
         <div class="layer-control-button" id="bring-forward">↑</div>
         <div class="layer-control-button" id="send-backward">↓</div>
         <div class="layer-control-button" id="send-to-back">↓↓</div>
+        <div class="layer-control-button" id="flip-horizontal" title="Flip Horizontal">↔️</div>
+        <div class="layer-control-button" id="flip-vertical" title="Flip Vertical">↕️</div>
         <div class="layer-control-button" id="preview-canvas"><i class="icon-eye">👁️</i></div>
         <div class="layer-control-button" id="download-canvas"><i class="icon-download">⬇️</i></div>
     </div>
@@ -139,6 +141,8 @@
                 <ul>
                     <li><strong>Resize:</strong> Drag the corner handles to resize the selected image.</li>
                     <li><strong>Rotate:</strong> Drag the rotate handle (circle above the image) to rotate.</li>
+                    <li><strong>Flip Horizontal:</strong> Mirror the selected image horizontally (left-right).</li>
+                    <li><strong>Flip Vertical:</strong> Mirror the selected image vertically (up-down).</li>
                 </ul>
                 
                 <h3>Layer Controls</h3>
@@ -161,6 +165,13 @@
                     <li><strong>Delete Image:</strong> Select an image and press the Delete key to remove it from the canvas.</li>
                     <li><strong>Clear Canvas:</strong> Remove all images from the canvas.</li>
                     <li><strong>Save Canvas:</strong> Save your current canvas layout (placeholder functionality).</li>
+                </ul>
+                
+                <h3>Keyboard Shortcuts</h3>
+                <ul>
+                    <li><strong>Delete:</strong> Remove selected image from canvas.</li>
+                    <li><strong>H:</strong> Flip selected image horizontally (left-right mirror).</li>
+                    <li><strong>V:</strong> Flip selected image vertically (up-down mirror).</li>
                 </ul>
             </div>
         </div>

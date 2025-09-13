@@ -415,6 +415,30 @@ button:active {
     margin: 2px;
     cursor: pointer;
     font-size: 14px;
+    transition: all 0.1s ease;
+}
+
+/* 镜像按钮特殊样式 */
+#flip-horizontal, #flip-vertical {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#flip-horizontal:active, #flip-vertical:active {
+    transform: scale(0.95);
+    animation: flipFeedback 0.3s ease;
+}
+
+@keyframes flipFeedback {
+    0% {
+        background-color: #c0c0c0;
+    }
+    50% {
+        background-color: #a0a0a0;
+    }
+    100% {
+        background-color: #c0c0c0;
+    }
 }
 
 /* 图标样式 */
@@ -620,5 +644,7 @@ button:active {
     border-top: 1px solid #808080;
     border-left: 1px solid #808080;
 } 
+
+ 
 
  

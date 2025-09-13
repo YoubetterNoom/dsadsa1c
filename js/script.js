@@ -1409,7 +1409,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 创建水印元素
         const watermark = document.createElement('div');
         watermark.className = 'canvas-watermark';
-        watermark.textContent = 'JAKCANVAS -- $JK';
+        watermark.textContent = 'JAKCANVAS -- $JC';
         watermark.style.cssText = `
             position: absolute;
             top: 20px;

@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'hats':
                 // 添加hats文件夹中的图片
-                for (let i = 1; i <= 73; i++) {
+                for (let i = 1; i <= 74; i++) {
                     images.push({
                         src: `images/hats/${i}.png`,
                         alt: `Hat ${i}`

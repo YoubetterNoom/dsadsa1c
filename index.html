@@ -44,7 +44,7 @@
 
     <div class="container">
         <header>
-            <h1 class="rainbow-text">Jak Canvas - $JC Version 1.2</h1>
+            <h1 class="rainbow-text">Jak Canvas - $JC Version 1.3</h1>
             <button id="help-btn" class="help-button">Help</button>
         </header>
         
@@ -105,7 +105,36 @@
                         <button id="chart-btn">Chart</button>
                     </div>
                 </div>
-                <div id="canvas" class="canvas"></div>
+                <div class="canvas-editor-area">
+                    <div id="canvas" class="canvas"></div>
+                    
+                    <!-- Layers Panel -->
+                    <div class="layers-panel">
+                        <div class="title-bar">
+                            <span>Layers</span>
+                            <div class="window-controls">
+                                <div class="window-button minimize">_</div>
+                            </div>
+                        </div>
+                        <div class="layers-content">
+                            <div class="layers-header">
+                                <div class="layer-info">
+                                    <span class="layer-count">0 layers</span>
+                                </div>
+                                <div class="layer-controls">
+                                    <button class="layer-btn" id="delete-layer" title="Delete Selected Layer" disabled>🗑️</button>
+                                </div>
+                            </div>
+                            <div class="layers-list win95-scrollbar" id="layers-list">
+                                <div class="empty-layers">
+                                    <div class="empty-icon">📄</div>
+                                    <p>No layers yet</p>
+                                    <small>Add images to see layers</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         

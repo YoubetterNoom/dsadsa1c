@@ -252,6 +252,13 @@ h1 {
     margin-left: auto;
 }
 
+/* Canvas Editor Area */
+.canvas-editor-area {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+}
+
 .canvas {
     flex: 1;
     position: relative;
@@ -261,6 +268,206 @@ h1 {
     border-left: 2px solid #000;
     border-right: 2px solid #fff;
     border-bottom: 2px solid #fff;
+}
+
+/* Layers Panel */
+.layers-panel {
+    width: 200px;
+    min-width: 200px;
+    background-color: #c0c0c0;
+    border-top: 2px solid #fff;
+    border-left: 2px solid #fff;
+    border-right: 2px solid #000;
+    border-bottom: 2px solid #000;
+    display: flex;
+    flex-direction: column;
+}
+
+.layers-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #c0c0c0;
+    max-height: calc(100vh - 150px);
+    min-height: 200px;
+    overflow: hidden;
+}
+
+.layers-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 8px;
+    background-color: #c0c0c0;
+    border-bottom: 1px solid #808080;
+}
+
+.layer-info {
+    font-size: 11px;
+    color: #000;
+}
+
+.layer-controls {
+    display: flex;
+    gap: 3px;
+}
+
+.layer-btn {
+    padding: 2px 4px;
+    font-size: 10px;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.layer-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.layers-list {
+    flex: 1;
+    padding: 5px;
+    background-color: #fff;
+    border-top: 2px solid #000;
+    border-left: 2px solid #000;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    max-height: calc(100vh - 200px);
+}
+
+.layer-item {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    margin-bottom: 2px;
+    background-color: #fff;
+    border: 1px solid #c0c0c0;
+    cursor: pointer;
+    transition: background-color 0.1s;
+    position: relative;
+}
+
+.layer-drag-handle {
+    cursor: grab;
+    color: #808080;
+    font-size: 12px;
+    margin-right: 6px;
+    padding: 2px;
+    user-select: none;
+    font-weight: bold;
+}
+
+.layer-drag-handle:hover {
+    color: #000;
+}
+
+.layer-item:active .layer-drag-handle {
+    cursor: grabbing;
+}
+
+.layer-item.dragging {
+    opacity: 0.5;
+    transform: rotate(2deg);
+}
+
+.layer-item.drag-over-top {
+    border-top: 3px solid #0066cc;
+}
+
+.layer-item.drag-over-bottom {
+    border-bottom: 3px solid #0066cc;
+}
+
+.layer-item:hover {
+    background-color: #e6e6fa;
+}
+
+.layer-item.selected {
+    background-color: #0066cc;
+    color: #fff;
+}
+
+.layer-thumbnail {
+    width: 32px;
+    height: 32px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.layer-thumbnail img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.layer-info-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.layer-name {
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.layer-details {
+    font-size: 9px;
+    opacity: 0.7;
+}
+
+.layer-visibility {
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    flex-shrink: 0;
+}
+
+.layer-visibility.hidden {
+    opacity: 0.3;
+}
+
+.empty-layers {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.empty-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.empty-layers p {
+    margin: 5px 0;
+    font-size: 12px;
+}
+
+.empty-layers small {
+    font-size: 10px;
+    opacity: 0.7;
 }
 
 button {

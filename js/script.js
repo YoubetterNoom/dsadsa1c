@@ -103,6 +103,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let originalWidth, originalHeight, originalAngle, originalLeft, originalTop;
     let highestZIndex = 0;
     
+    // Layers management
+    let layers = []; // Array to store all canvas layers
+    let selectedLayerId = null;
+    let layerIdCounter = 1;
+    
     // Initialize
     loadImages(activeCategory);
     
@@ -193,6 +198,13 @@ document.addEventListener('DOMContentLoaded', function() {
         canvas.innerHTML = '';
         currentZIndex = 1;
         highestZIndex = 0;
+        
+        // Clear layers panel
+        layers = [];
+        selectedLayerId = null;
+        selectedImage = null;
+        renderLayersPanel();
+        
         // 重新添加水印
         addWatermark();
     });
@@ -236,13 +248,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const zIndex = parseInt(selectedImage.style.zIndex || 1);
             selectedImage.style.zIndex = zIndex + 1;
             highestZIndex = Math.max(highestZIndex, zIndex + 1);
+            updateLayerZIndex(selectedImage, zIndex + 1);
         }
     });
     
     sendBackwardBtn.addEventListener('click', function() {
         if (selectedImage && parseInt(selectedImage.style.zIndex || 1) > 1) {
             const zIndex = parseInt(selectedImage.style.zIndex || 1);
-            selectedImage.style.zIndex = Math.max(1, zIndex - 1);
+            const newZIndex = Math.max(1, zIndex - 1);
+            selectedImage.style.zIndex = newZIndex;
+            updateLayerZIndex(selectedImage, newZIndex);
         }
     });
     
@@ -250,6 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (selectedImage) {
             highestZIndex += 1;
             selectedImage.style.zIndex = highestZIndex;
+            updateLayerZIndex(selectedImage, highestZIndex);
         }
     });
     
@@ -261,9 +277,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (img !== selectedImage && parseInt(img.style.zIndex || 1) === 1) {
                     img.style.zIndex = parseInt(img.style.zIndex || 1) + 1;
                     highestZIndex = Math.max(highestZIndex, parseInt(img.style.zIndex));
+                    updateLayerZIndex(img, parseInt(img.style.zIndex));
                 }
             });
             selectedImage.style.zIndex = 1;
+            updateLayerZIndex(selectedImage, 1);
         }
     });
     
@@ -326,8 +344,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Keyboard shortcuts
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Delete' && selectedImage) {
-            selectedImage.remove();
-            selectedImage = null;
+            // Remove from layers panel
+            const layerId = selectedImage.dataset.layerId;
+            if (layerId) {
+                deleteLayer(layerId);
+            } else {
+                selectedImage.remove();
+                selectedImage = null;
+            }
         }
         
         // Flip shortcuts - H for horizontal, V for vertical
@@ -578,6 +602,10 @@ document.addEventListener('DOMContentLoaded', function() {
         imgElement.style.transform = 'scaleX(1) scaleY(1) rotate(0deg)'; // Initialize transform for flip compatibility
         highestZIndex = Math.max(highestZIndex, currentZIndex - 1);
         
+        // Assign unique layer ID
+        const layerId = `layer_${layerIdCounter++}`;
+        imgElement.dataset.layerId = layerId;
+        
         // Create the actual image
         const img = document.createElement('img');
         img.src = imgSrc;
@@ -642,6 +670,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update transform controls size
             updateTransformControlsPosition(imgElement);
+            
+            // Add to layers panel
+            addLayerToPanel(layerId, imgSrc, imgElement);
         };
         
         // Add event listeners for the image
@@ -1216,6 +1247,10 @@ document.addEventListener('DOMContentLoaded', function() {
         textElement.style.zIndex = currentZIndex++;
         highestZIndex = Math.max(highestZIndex, currentZIndex - 1);
         
+        // Assign unique layer ID for text
+        const layerId = `layer_${layerIdCounter++}`;
+        textElement.dataset.layerId = layerId;
+        
         // 添加到画布
         canvas.appendChild(textElement);
         
@@ -1367,6 +1402,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.textContent = '点击编辑文字';
             }
             
+            // Update layer panel when text content changes
+            const layerId = this.dataset.layerId;
+            const layer = layers.find(l => l.id === layerId);
+            if (layer && layer.type === 'text') {
+                layer.textContent = this.textContent;
+                renderLayersPanel();
+            }
+            
             // 失焦后重新启用拖动功能
             setTimeout(() => {
                 // 短暂延时确保其他事件处理完成
@@ -1386,6 +1429,9 @@ document.addEventListener('DOMContentLoaded', function() {
         textElement.addEventListener('keydown', function(e) {
             e.stopPropagation();
         });
+        
+        // Add text to layers panel with special text icon
+        addTextLayerToPanel(layerId, textElement);
         
         // 选中新添加的文本
         selectImage(textElement);
@@ -1429,4 +1475,352 @@ document.addEventListener('DOMContentLoaded', function() {
         // 将水印添加到画布
         canvas.appendChild(watermark);
     }
+    
+    // Layers Panel Management Functions
+    function addLayerToPanel(layerId, imageSrc, element) {
+        const layerData = {
+            id: layerId,
+            name: `Image ${layers.length + 1}`,
+            imageSrc: imageSrc,
+            element: element,
+            visible: true,
+            zIndex: element.style.zIndex,
+            type: 'image'
+        };
+        
+        layers.push(layerData);
+        renderLayersPanel();
+        selectLayer(layerId);
+    }
+    
+    function addTextLayerToPanel(layerId, element) {
+        const layerData = {
+            id: layerId,
+            name: `Text ${layers.filter(l => l.type === 'text').length + 1}`,
+            imageSrc: null,
+            element: element,
+            visible: true,
+            zIndex: element.style.zIndex,
+            type: 'text',
+            textContent: element.textContent || 'Text'
+        };
+        
+        layers.push(layerData);
+        renderLayersPanel();
+        selectLayer(layerId);
+    }
+    
+    function renderLayersPanel() {
+        const layersList = document.getElementById('layers-list');
+        const layerCount = document.querySelector('.layer-count');
+        
+        // Update layer count
+        layerCount.textContent = `${layers.length} layers`;
+        
+        if (layers.length === 0) {
+            layersList.innerHTML = `
+                <div class="empty-layers">
+                    <div class="empty-icon">📄</div>
+                    <p>No layers yet</p>
+                    <small>Add images to see layers</small>
+                </div>
+            `;
+            return;
+        }
+        
+        // Sort layers by z-index (highest first)
+        const sortedLayers = [...layers].sort((a, b) => parseInt(b.zIndex) - parseInt(a.zIndex));
+        
+        layersList.innerHTML = sortedLayers.map(layer => `
+            <div class="layer-item ${selectedLayerId === layer.id ? 'selected' : ''}" 
+                 data-layer-id="${layer.id}"
+                 draggable="true">
+                <div class="layer-drag-handle">⋮⋮</div>
+                <div class="layer-thumbnail">
+                    ${layer.type === 'text' 
+                        ? `<div style="display: flex; align-items: center; justify-content: center; font-size: 16px;">📝</div>`
+                        : `<img src="${layer.imageSrc}" alt="${layer.name}">`
+                    }
+                </div>
+                <div class="layer-info-container">
+                    <div class="layer-name">${layer.name}</div>
+                    <div class="layer-details">
+                        ${layer.type === 'text' 
+                            ? `"${(layer.textContent || 'Text').substring(0, 15)}${layer.textContent && layer.textContent.length > 15 ? '...' : ''}"` 
+                            : `Z-index: ${layer.zIndex}`
+                        }
+                    </div>
+                </div>
+                <div class="layer-visibility ${layer.visible ? '' : 'hidden'}" 
+                     data-layer-id="${layer.id}">
+                    ${layer.visible ? '👁️' : '🚫'}
+                </div>
+            </div>
+        `).join('');
+        
+        // Add event listeners
+        addLayerEventListeners();
+        addLayerDragEventListeners();
+    }
+    
+    function addLayerEventListeners() {
+        const layerItems = document.querySelectorAll('.layer-item');
+        const visibilityButtons = document.querySelectorAll('.layer-visibility');
+        
+        // Layer selection
+        layerItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('layer-visibility') && 
+                    !e.target.classList.contains('layer-drag-handle')) {
+                    const layerId = item.dataset.layerId;
+                    selectLayer(layerId);
+                    
+                    // Also select the image on canvas
+                    const layer = layers.find(l => l.id === layerId);
+                    if (layer) {
+                        selectImage(layer.element);
+                    }
+                }
+            });
+        });
+        
+        // Visibility toggle
+        visibilityButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const layerId = btn.dataset.layerId;
+                toggleLayerVisibility(layerId);
+            });
+        });
+    }
+    
+    function addLayerDragEventListeners() {
+        const layerItems = document.querySelectorAll('.layer-item');
+        let draggedElement = null;
+        let draggedLayerId = null;
+        
+        layerItems.forEach(item => {
+            // Drag start
+            item.addEventListener('dragstart', (e) => {
+                draggedElement = item;
+                draggedLayerId = item.dataset.layerId;
+                item.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', item.outerHTML);
+            });
+            
+            // Drag end
+            item.addEventListener('dragend', (e) => {
+                item.classList.remove('dragging');
+                document.querySelectorAll('.layer-item').forEach(el => {
+                    el.classList.remove('drag-over-top', 'drag-over-bottom');
+                });
+                draggedElement = null;
+                draggedLayerId = null;
+            });
+            
+            // Drag over
+            item.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                
+                if (draggedElement && draggedElement !== item) {
+                    const rect = item.getBoundingClientRect();
+                    const midpoint = rect.top + rect.height / 2;
+                    
+                    // Clear all drag over classes
+                    document.querySelectorAll('.layer-item').forEach(el => {
+                        el.classList.remove('drag-over-top', 'drag-over-bottom');
+                    });
+                    
+                    // Add appropriate class based on position
+                    if (e.clientY < midpoint) {
+                        item.classList.add('drag-over-top');
+                    } else {
+                        item.classList.add('drag-over-bottom');
+                    }
+                }
+            });
+            
+            // Drag leave
+            item.addEventListener('dragleave', (e) => {
+                // Only remove classes if we're truly leaving the element
+                if (!item.contains(e.relatedTarget)) {
+                    item.classList.remove('drag-over-top', 'drag-over-bottom');
+                }
+            });
+            
+            // Drop
+            item.addEventListener('drop', (e) => {
+                e.preventDefault();
+                
+                if (draggedLayerId && draggedLayerId !== item.dataset.layerId) {
+                    const targetLayerId = item.dataset.layerId;
+                    const draggedLayer = layers.find(l => l.id === draggedLayerId);
+                    const targetLayer = layers.find(l => l.id === targetLayerId);
+                    
+                    if (draggedLayer && targetLayer) {
+                        const rect = item.getBoundingClientRect();
+                        const midpoint = rect.top + rect.height / 2;
+                        const isDropAbove = e.clientY < midpoint;
+                        
+                        reorderLayers(draggedLayerId, targetLayerId, isDropAbove);
+                    }
+                }
+                
+                // Clean up drag classes
+                document.querySelectorAll('.layer-item').forEach(el => {
+                    el.classList.remove('drag-over-top', 'drag-over-bottom');
+                });
+            });
+        });
+    }
+    
+    function reorderLayers(draggedLayerId, targetLayerId, insertAbove) {
+        const draggedLayer = layers.find(l => l.id === draggedLayerId);
+        const targetLayer = layers.find(l => l.id === targetLayerId);
+        
+        if (!draggedLayer || !targetLayer) return;
+        
+        // Get all layers sorted by current z-index
+        const sortedLayers = [...layers].sort((a, b) => parseInt(a.zIndex) - parseInt(b.zIndex));
+        
+        // Find target position in sorted array
+        const targetIndex = sortedLayers.findIndex(l => l.id === targetLayerId);
+        
+        // Calculate new z-index for dragged layer
+        let newZIndex;
+        
+        if (insertAbove) {
+            // Insert above target (higher z-index)
+            if (targetIndex === sortedLayers.length - 1) {
+                // Target is the topmost layer
+                newZIndex = parseInt(targetLayer.zIndex) + 1;
+            } else {
+                // Insert between target and the layer above it
+                const layerAbove = sortedLayers[targetIndex + 1];
+                newZIndex = Math.floor((parseInt(targetLayer.zIndex) + parseInt(layerAbove.zIndex)) / 2);
+                
+                // If there's no room between layers, shift all layers above
+                if (newZIndex <= parseInt(targetLayer.zIndex)) {
+                    newZIndex = parseInt(targetLayer.zIndex) + 1;
+                    // Shift layers above target
+                    for (let i = targetIndex + 1; i < sortedLayers.length; i++) {
+                        const layer = sortedLayers[i];
+                        if (layer.id !== draggedLayerId) {
+                            layer.zIndex = parseInt(layer.zIndex) + 1;
+                            layer.element.style.zIndex = layer.zIndex;
+                        }
+                    }
+                }
+            }
+        } else {
+            // Insert below target (lower z-index)
+            if (targetIndex === 0) {
+                // Target is the bottommost layer
+                newZIndex = parseInt(targetLayer.zIndex) - 1;
+                if (newZIndex < 1) {
+                    // Shift all layers up
+                    sortedLayers.forEach(layer => {
+                        if (layer.id !== draggedLayerId) {
+                            layer.zIndex = parseInt(layer.zIndex) + 1;
+                            layer.element.style.zIndex = layer.zIndex;
+                        }
+                    });
+                    newZIndex = 1;
+                }
+            } else {
+                // Insert between target and the layer below it
+                const layerBelow = sortedLayers[targetIndex - 1];
+                newZIndex = Math.floor((parseInt(targetLayer.zIndex) + parseInt(layerBelow.zIndex)) / 2);
+                
+                // If there's no room between layers, shift all layers below
+                if (newZIndex >= parseInt(targetLayer.zIndex)) {
+                    newZIndex = parseInt(targetLayer.zIndex) - 1;
+                    if (newZIndex < 1) {
+                        // Shift all layers up
+                        for (let i = 0; i < targetIndex; i++) {
+                            const layer = sortedLayers[i];
+                            if (layer.id !== draggedLayerId) {
+                                layer.zIndex = parseInt(layer.zIndex) + 1;
+                                layer.element.style.zIndex = layer.zIndex;
+                            }
+                        }
+                        newZIndex = 1;
+                    }
+                }
+            }
+        }
+        
+        // Update dragged layer's z-index
+        draggedLayer.zIndex = newZIndex;
+        draggedLayer.element.style.zIndex = newZIndex;
+        
+        // Re-render layers panel
+        renderLayersPanel();
+    }
+    
+    function selectLayer(layerId) {
+        selectedLayerId = layerId;
+        renderLayersPanel();
+        
+        // Update layer control buttons
+        const deleteBtn = document.getElementById('delete-layer');
+        
+        deleteBtn.disabled = !selectedLayerId;
+    }
+    
+    function toggleLayerVisibility(layerId) {
+        const layer = layers.find(l => l.id === layerId);
+        if (layer) {
+            layer.visible = !layer.visible;
+            layer.element.style.display = layer.visible ? 'block' : 'none';
+            renderLayersPanel();
+        }
+    }
+    
+    function deleteLayer(layerId) {
+        const layerIndex = layers.findIndex(l => l.id === layerId);
+        if (layerIndex !== -1) {
+            const layer = layers[layerIndex];
+            
+            // Remove from canvas
+            if (layer.element.parentNode) {
+                layer.element.parentNode.removeChild(layer.element);
+            }
+            
+            // Remove from layers array
+            layers.splice(layerIndex, 1);
+            
+            // Update selection
+            if (selectedLayerId === layerId) {
+                selectedLayerId = null;
+                deselectImage();
+            }
+            
+            renderLayersPanel();
+        }
+    }
+    
+
+    // Layer control button event listeners
+    document.getElementById('delete-layer').addEventListener('click', () => {
+        if (selectedLayerId) {
+            deleteLayer(selectedLayerId);
+        }
+    });
+    
+
+    // Update layer z-index when image is selected
+    function updateLayerZIndex(element, newZIndex) {
+        const layerId = element.dataset.layerId;
+        const layer = layers.find(l => l.id === layerId);
+        if (layer) {
+            layer.zIndex = newZIndex;
+            renderLayersPanel();
+        }
+    }
+    
+    // Initialize layers panel
+    renderLayersPanel();
 }); 

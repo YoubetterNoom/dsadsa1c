@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jak Canvas</title>
+    <title>Jak OS</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/loading.css">
     <link rel="icon" href="logo.png" type="image/png">
@@ -17,7 +17,7 @@
                     <div class="loading-title-bar-icon">
                         <img src="logo.png" alt="AI Logo" width="16" height="16">
                     </div>
-                    <span>Starting Jak Canvas...</span>
+                    <span>Starting Jak OS...</span>
                 </div>
                 <div class="loading-window-controls">
                     <div class="loading-window-button minimize">_</div>
@@ -27,7 +27,7 @@
             </div>
             <div class="loading-content">
                 <div class="loading-message">
-                    <p>Please wait while Canvas is loading...</p>
+                    <p>Please wait while Jak OS is loading...</p>
                 </div>
                 <div class="loading-progress-container">
                     <div id="loading-progress-bar" class="loading-progress-bar"></div>
@@ -44,7 +44,7 @@
 
     <div class="container">
         <header>
-            <h1 class="rainbow-text">Jak Canvas - $JC Version 1.3</h1>
+            <h1 class="rainbow-text">Jak OS - $JAK Version 1.0</h1>
             <button id="help-btn" class="help-button">Help</button>
         </header>
         
@@ -87,26 +87,26 @@
                 </div>
             </div>
             
-            <div class="canvas-container">
+            <div class="OS-container">
                 <div class="title-bar">
-                    <span>Canvas Editor</span>
+                    <span>OS Editor</span>
                     <div class="window-controls">
                         <div class="window-button minimize">_</div>
                         <div class="window-button maximize">□</div>
                         <div class="window-button close">×</div>
                     </div>
                 </div>
-                <div class="canvas-controls">
-                    <button id="clear-canvas">Clear Canvas</button>
-                    <button id="save-canvas">Save Canvas</button>
+                <div class="OS-controls">
+                    <button id="clear-OS">Clear OS</button>
+                    <button id="save-OS">Save OS</button>
                     <button id="add-text">Add Text</button>
                     <div class="right-buttons">
                         <button id="community-btn">Community</button>
                         <button id="chart-btn">Chart</button>
                     </div>
                 </div>
-                <div class="canvas-editor-area">
-                    <div id="canvas" class="canvas"></div>
+                <div class="OS-editor-area">
+                    <div id="OS" class="OS"></div>
                     
                     <!-- Layers Panel -->
                     <div class="layers-panel">
@@ -146,7 +146,7 @@
                     <div class="upload-placeholder">
                         <div class="upload-icon">📷</div>
                         <h3>Share Your Creations</h3>
-                        <p>Upload and share your canvas creations with the community</p>
+                        <p>Upload and share your OS creations with the community</p>
                         <button class="upload-btn" disabled>
                             <span>📤</span>
                             Upload Image
@@ -189,8 +189,8 @@
         <div class="layer-control-button" id="send-to-back">↓↓</div>
         <div class="layer-control-button" id="flip-horizontal" title="Flip Horizontal">↔️</div>
         <div class="layer-control-button" id="flip-vertical" title="Flip Vertical">↕️</div>
-        <div class="layer-control-button" id="preview-canvas"><i class="icon-eye">👁️</i></div>
-        <div class="layer-control-button" id="download-canvas"><i class="icon-download">⬇️</i></div>
+        <div class="layer-control-button" id="preview-OS"><i class="icon-eye">👁️</i></div>
+        <div class="layer-control-button" id="download-OS"><i class="icon-download">⬇️</i></div>
     </div>
     
     <!-- Help Dialog -->
@@ -203,9 +203,9 @@
             <div class="help-text win95-scrollbar">
                 <h3>Basic Operations</h3>
                 <ul>
-                    <li><strong>Select Image:</strong> Click on any image from the sidebar to add it to the canvas.</li>
-                    <li><strong>Move Image:</strong> Click and drag an image to move it around the canvas.</li>
-                    <li><strong>Deselect:</strong> Click on empty space on the canvas to deselect any selected image.</li>
+                    <li><strong>Select Image:</strong> Click on any image from the sidebar to add it to the OS.</li>
+                    <li><strong>Move Image:</strong> Click and drag an image to move it around the OS.</li>
+                    <li><strong>Deselect:</strong> Click on empty space on the OS to deselect any selected image.</li>
                 </ul>
                 
                 <h3>Image Manipulation</h3>
@@ -226,21 +226,21 @@
                 
                 <h3>Text Functions</h3>
                 <ul>
-                    <li><strong>Add Text:</strong> Click the "Add Text" button to add text to the canvas.</li>
+                    <li><strong>Add Text:</strong> Click the "Add Text" button to add text to the OS.</li>
                     <li><strong>Edit Text:</strong> Double-click on any text element to edit its content.</li>
                     <li><strong>Format Text:</strong> Use the text controls that appear when text is selected.</li>
                 </ul>
                 
                 <h3>Other Functions</h3>
                 <ul>
-                    <li><strong>Delete Image:</strong> Select an image and press the Delete key to remove it from the canvas.</li>
-                    <li><strong>Clear Canvas:</strong> Remove all images from the canvas.</li>
-                    <li><strong>Save Canvas:</strong> Save your current canvas layout (placeholder functionality).</li>
+                    <li><strong>Delete Image:</strong> Select an image and press the Delete key to remove it from the OS.</li>
+                    <li><strong>Clear OS:</strong> Remove all images from the OS.</li>
+                    <li><strong>Save OS:</strong> Save your current OS layout (placeholder functionality).</li>
                 </ul>
                 
                 <h3>Keyboard Shortcuts</h3>
                 <ul>
-                    <li><strong>Delete:</strong> Remove selected image from canvas.</li>
+                    <li><strong>Delete:</strong> Remove selected image from OS.</li>
                     <li><strong>H:</strong> Flip selected image horizontally (left-right mirror).</li>
                     <li><strong>V:</strong> Flip selected image vertically (up-down mirror).</li>
                 </ul>

@@ -13,10 +13,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingMessages = [
         "Initializing system components...",
         "Loading user interface...",
-        "Preparing Canvas elements...",
+        "Preparing JAKOS elements...",
         "Loading assets...",
-        "Configuring Canvas environment...",
-        "Starting $JC Setup...",
+        "Configuring JAKOS environment...",
+        "Starting $JAK Setup...",
         "Almost there..."
     ];
     
@@ -1455,7 +1455,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 创建水印元素
         const watermark = document.createElement('div');
         watermark.className = 'canvas-watermark';
-        watermark.textContent = 'JAKCANVAS -- $JC';
+        watermark.textContent = 'JAKOS -- $JAK';
         watermark.style.cssText = `
             position: absolute;
             top: 20px;

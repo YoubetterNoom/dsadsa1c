@@ -1444,7 +1444,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Chart button functionality
     chartBtn.addEventListener('click', function() {
-        window.open('https://pump.fun/coin/Bvtzt8iJfxeqimGrU4YYcciQaNgVNtr4fsiDTMs9pump', '_blank');
+        window.open('https://pump.fun/coin/', '_blank');
     });
     
     // 初始化时显示图层控制菜单

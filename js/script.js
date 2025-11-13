@@ -1439,7 +1439,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Community button functionality
     communityBtn.addEventListener('click', function() {
-        window.open('https://x.com/i/communities/1966804177226764639', '_blank');
+        window.open('https://x.com/JakOSfun', '_blank');
     });
 
     // Chart button functionality
